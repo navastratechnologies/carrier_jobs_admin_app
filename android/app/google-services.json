@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "700782936426",
+    "project_id": "carrier-jobs",
+    "storage_bucket": "carrier-jobs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700782936426:android:79e4e785290150e8f0a513",
+        "android_client_info": {
+          "package_name": "com.carrier_jobs.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA93Hyy4xDyZrw-DyRYqplLumj1qiGKANw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700782936426:android:d8176893b785eb47f0a513",
+        "android_client_info": {
+          "package_name": "com.carrier_jobs_admin.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA93Hyy4xDyZrw-DyRYqplLumj1qiGKANw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
