@@ -1,11 +1,12 @@
 import 'dart:developer';
 
 import 'package:carrier_jobs_app/controller/instances.dart';
-import 'package:carrier_jobs_app/controller/notification_controller.dart';
+import 'package:carrier_jobs_app/view/add_job_additional_data.dart';
 import 'package:carrier_jobs_app/view/helpers/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:multi_dropdown/multiselect_dropdown.dart';
 
 class JobPage extends StatefulWidget {
   const JobPage({super.key});
@@ -23,6 +24,9 @@ class _JobPageState extends State<JobPage> {
   TextEditingController salaryController = TextEditingController();
   TextEditingController qualificationController = TextEditingController();
   TextEditingController detailsController = TextEditingController();
+
+  late MultiSelectController multiSelectController;
+
   String selectedValue = '';
   List<String> options = [];
 
@@ -38,6 +42,7 @@ class _JobPageState extends State<JobPage> {
     }
 
     setState(() {
+      multiSelectController = MultiSelectController();
       options = fetchedOptions;
       selectedValue = options.isNotEmpty ? options[0] : '';
     });
@@ -129,11 +134,6 @@ class _JobPageState extends State<JobPage> {
                     ),
                   ],
                 ),
-                fields(
-                  departmentController,
-                  'Please enter job department',
-                  'Please enter job department',
-                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -148,114 +148,81 @@ class _JobPageState extends State<JobPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-                        value: selectedValue,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedValue = newValue!;
-                            log('drop value is $selectedValue');
-                          });
-                        },
-                        items: options
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: GoogleFonts.poppins(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                                color: blackColor.withOpacity(0.4),
-                              ),
+                      child: MultiSelectDropDown(
+                        inputDecoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: blackColor.withOpacity(0.3),
+                              width: 1.2,
                             ),
-                          );
-                        }).toList(),
+                          ),
+                        ),
+                        controller: multiSelectController,
+                        onOptionSelected: (options) {
+                          debugPrint(options.toString());
+                        },
+                        hint: 'Category',
+                        hintPadding: EdgeInsets.zero,
+                        hintStyle: GoogleFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: blackColor.withOpacity(0.4),
+                        ),
+                        options: options
+                            .map((option) =>
+                                ValueItem(label: option, value: option))
+                            .toList(),
+                        selectionType: SelectionType.multi,
+                        chipConfig: const ChipConfig(wrapType: WrapType.scroll),
+                        dropdownHeight: 300,
+                        optionTextStyle: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w500,
+                        ),
+                        selectedOptionIcon: const Icon(Icons.check_circle),
                       ),
                     ),
                   ],
                 ),
                 fields(
-                  ageController,
-                  'Please enter required age limit',
-                  'Please enter required age limit',
-                ),
-                fields(
-                  postController,
-                  'Please enter no of posts available',
-                  'Please enter no of posts available',
-                ),
-                fields(
-                  qualificationController,
-                  'Please enter your qualification',
-                  'Please enter your qualification',
-                ),
-                fields(
-                  salaryController,
-                  'Please enter salary',
-                  'Please enter salary',
-                ),
-                fields(
                   detailsController,
-                  'Please enter additional details',
-                  'Please enter additional details',
+                  'How to apply',
+                  'How to apply',
                 ),
                 const SizedBox(height: 20),
                 Center(
                   child: MaterialButton(
                     color: mainColor,
                     onPressed: () async {
+                      List<String> categoryList = [];
                       if (formKey.currentState?.validate() ?? false) {
-                        jobsCollection.add(
-                          {
-                            'age_limit': ageController.text,
-                            'category': selectedValue,
-                            'job_department': departmentController.text,
-                            'job_location': selectedValue1,
-                            'job_name': nameController.text,
-                            'no_of_posts': postController.text,
-                            'qualification': qualificationController.text,
-                            'salary': salaryController.text,
-                            'date':
-                                "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
-                            'details': detailsController.text,
-                            'isLive': 'live',
-                          },
-                        ).then(
-                          (value) async {
-                            log('new id is ${value.id}');
-                            await FirebaseFirestore.instance
-                                .collection('tokens')
-                                .get()
-                                .then(
-                              (value1) {
-                                for (var i = 0; i < value1.docs.length; i++) {
-                                  sendPushMessage(
-                                    value1.docs[i]['token'],
-                                    "${postController.text} posts in ${nameController.text}",
-                                    "New Job Uploaded!!!",
-                                    value.id.toString(),
-                                  );
-                                }
-                              },
-                            );
-                          },
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            backgroundColor: Colors.green,
-                            content: Text(
-                              'Job Added successfully',
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w600,
-                              ),
+                        for (var i = 0;
+                            i < multiSelectController.selectedOptions.length;
+                            i++) {
+                          log("controller value is ${multiSelectController.selectedOptions[i].value}");
+                          categoryList.add(
+                            multiSelectController.selectedOptions[i].value
+                                .toString(),
+                          );
+                        }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddJobAdditionalDetail(
+                              title: nameController.text,
+                              location: selectedValue1,
+                              category: categoryList
+                                  .toString()
+                                  .replaceAll('[', '')
+                                  .replaceAll(']', '')
+                                  .replaceAll(' , ', ','),
+                              howToApply: detailsController.text,
                             ),
                           ),
                         );
                       }
                     },
                     child: Text(
-                      'Add Now',
+                      'Next',
                       style: GoogleFonts.poppins(
                         color: whiteColor,
                         fontWeight: FontWeight.w600,
@@ -280,7 +247,7 @@ class _JobPageState extends State<JobPage> {
           color: blackColor,
           fontWeight: FontWeight.bold,
         ),
-        maxLines: hint.toString().contains('additional') ? 5 : 1,
+        maxLines: hint.toString().contains('How to apply') ? 5 : 1,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: GoogleFonts.poppins(

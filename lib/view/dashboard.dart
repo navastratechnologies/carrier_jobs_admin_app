@@ -28,483 +28,497 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Admin Panel',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
+    return WillPopScope(
+      onWillPop: () {
+        return Future(() => false);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Admin Panel',
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          leading: Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(
+                  Icons.add_rounded,
+                ),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              );
+            },
           ),
         ),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(
-                Icons.add_rounded,
-              ),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
-      ),
-      drawer: Drawer(
-        backgroundColor: mainColor,
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              drawerButtons(
-                'Add Job',
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const JobPage(),
-                  ),
-                ),
-              ),
-              drawerButtons(
-                'Add Categories',
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CategoryPage(),
-                  ),
-                ),
-              ),
-              drawerButtons(
-                'Add Countries',
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CountryyPage(),
-                  ),
-                ),
-              ),
-              drawerButtons(
-                'Add Terms & Conditions',
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const TermsPage(),
-                  ),
-                ),
-              ),
-              drawerButtons(
-                'Add Privacy Policy',
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const PolicyPage(),
-                  ),
-                ),
-              ),
-              const Divider(),
-              drawerButtons(
-                'Log Out',
-                () async {
-                  await storage.delete(key: 'token');
-                  Navigator.push(
+        drawer: Drawer(
+          backgroundColor: mainColor,
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                drawerButtons(
+                  'Add Job',
+                  () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const SplashScreen(),
+                      builder: (context) => const JobPage(),
                     ),
-                  );
-                },
-              ),
-            ],
+                  ),
+                ),
+                drawerButtons(
+                  'Add Categories',
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CategoryPage(),
+                    ),
+                  ),
+                ),
+                drawerButtons(
+                  'Add Countries',
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CountryyPage(),
+                    ),
+                  ),
+                ),
+                drawerButtons(
+                  'Add Terms & Conditions',
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TermsPage(),
+                    ),
+                  ),
+                ),
+                drawerButtons(
+                  'Add Privacy Policy',
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PolicyPage(),
+                    ),
+                  ),
+                ),
+                const Divider(),
+                drawerButtons(
+                  'Log Out',
+                  () async {
+                    await storage.delete(key: 'token');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SplashScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      body: Container(
-        height: displayHeight(context),
-        width: displayWidth(context),
-        padding: const EdgeInsets.all(10),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  'Users Section :',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    color: blackColor.withOpacity(0.5),
+        body: Container(
+          height: displayHeight(context),
+          width: displayWidth(context),
+          padding: const EdgeInsets.all(10),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    'Users Section :',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      color: blackColor.withOpacity(0.5),
+                    ),
                   ),
                 ),
-              ),
-              Row(
-                children: [
-                  StreamBuilder(
-                    stream: usersCollection.snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        return detailardsWidget(
-                          'Total Users',
-                          snapshot.data!.docs.length.toString(),
-                          'Users',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const UsersList(type: 'all'),
+                Row(
+                  children: [
+                    StreamBuilder(
+                      stream: usersCollection.snapshots(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          return detailardsWidget(
+                            'Total Users',
+                            snapshot.data!.docs.length.toString(),
+                            'Users',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const UsersList(type: 'all'),
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        return detailardsWidget(
-                          'Total Users Live Now',
-                          '00',
-                          'Users',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const UsersList(type: 'all'),
+                          );
+                        } else {
+                          return detailardsWidget(
+                            'Total Users Live Now',
+                            '00',
+                            'Users',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const UsersList(type: 'all'),
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  const SizedBox(width: 10),
-                  StreamBuilder(
-                    stream: usersCollection
-                        .where('isLive', isEqualTo: 'yes')
-                        .snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        return detailardsWidget(
-                          'Total Users Logged in',
-                          snapshot.data!.docs.length.toString(),
-                          'Users',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const UsersList(type: 'logged_in'),
+                          );
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                    StreamBuilder(
+                      stream: usersCollection
+                          .where('isLive', isEqualTo: 'yes')
+                          .snapshots(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          return detailardsWidget(
+                            'Total Users Logged in',
+                            snapshot.data!.docs.length.toString(),
+                            'Users',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const UsersList(type: 'logged_in'),
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        return detailardsWidget(
-                          'Total Users Logged in',
-                          '00',
-                          'Users',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const UsersList(type: 'logged_in'),
+                          );
+                        } else {
+                          return detailardsWidget(
+                            'Total Users Logged in',
+                            '00',
+                            'Users',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const UsersList(type: 'logged_in'),
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  'Jobs Section :',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    color: blackColor.withOpacity(0.5),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    'Jobs Section :',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      color: blackColor.withOpacity(0.5),
+                    ),
                   ),
                 ),
-              ),
-              Row(
-                children: [
-                  StreamBuilder(
-                    stream: jobsCollection
-                        .where('isLive', isEqualTo: 'live')
-                        .snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        return detailardsWidget(
-                          'Total Jobs Live Now',
-                          snapshot.data!.docs.length.toString(),
-                          'Jobs',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const JobsList(type: 'live'),
+                Row(
+                  children: [
+                    StreamBuilder(
+                      stream: jobsCollection
+                          .where('isLive', isEqualTo: 'live')
+                          .snapshots(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          return detailardsWidget(
+                            'Total Jobs Live Now',
+                            snapshot.data!.docs.length.toString(),
+                            'Jobs',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const JobsList(type: 'live'),
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        return detailardsWidget(
-                          'Total Jobs Live Now',
-                          '00',
-                          'Jobs',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const JobsList(type: 'live'),
+                          );
+                        } else {
+                          return detailardsWidget(
+                            'Total Jobs Live Now',
+                            '00',
+                            'Jobs',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const JobsList(type: 'live'),
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  const SizedBox(width: 10),
-                  StreamBuilder(
-                    stream: jobsCollection
-                        .where('isLive', isEqualTo: 'expired')
-                        .snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        return detailardsWidget(
-                          'Total Jobs Expired',
-                          snapshot.data!.docs.length.toString(),
-                          'Jobs',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const JobsList(type: 'expired'),
+                          );
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                    StreamBuilder(
+                      stream: jobsCollection
+                          .where('isLive', isEqualTo: 'expired')
+                          .snapshots(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          return detailardsWidget(
+                            'Total Jobs Expired',
+                            snapshot.data!.docs.length.toString(),
+                            'Jobs',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const JobsList(type: 'expired'),
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        return detailardsWidget(
-                          'Total Jobs Expired',
-                          '00',
-                          'Jobs',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const JobsList(type: 'expired'),
+                          );
+                        } else {
+                          return detailardsWidget(
+                            'Total Jobs Expired',
+                            '00',
+                            'Jobs',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const JobsList(type: 'expired'),
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  'Categories Section :',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    color: blackColor.withOpacity(0.5),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    'Categories Section :',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      color: blackColor.withOpacity(0.5),
+                    ),
                   ),
                 ),
-              ),
-              Row(
-                children: [
-                  StreamBuilder(
-                    stream: categoriesCollection
-                        .where('isLive', isEqualTo: 'live')
-                        .snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        return detailardsWidget(
-                          'Total Categories Live Now',
-                          snapshot.data!.docs.length.toString(),
-                          'Categories',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const CategoriesList(type: 'live'),
+                Row(
+                  children: [
+                    StreamBuilder(
+                      stream: categoriesCollection
+                          .where('isLive', isEqualTo: 'live')
+                          .snapshots(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          return detailardsWidget(
+                            'Total Categories Live Now',
+                            snapshot.data!.docs.length.toString(),
+                            'Categories',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const CategoriesList(type: 'live'),
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        return detailardsWidget(
-                          'Total Categories Live Now',
-                          '00',
-                          'Categories',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const CategoriesList(type: 'live'),
+                          );
+                        } else {
+                          return detailardsWidget(
+                            'Total Categories Live Now',
+                            '00',
+                            'Categories',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const CategoriesList(type: 'live'),
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  const SizedBox(width: 10),
-                  StreamBuilder(
-                    stream: categoriesCollection
-                        .where('isLive', isEqualTo: 'expired')
-                        .snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        return detailardsWidget(
-                          'Total Categories Expired',
-                          snapshot.data!.docs.length.toString(),
-                          'Categories',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const CategoriesList(type: 'expired'),
+                          );
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                    StreamBuilder(
+                      stream: categoriesCollection
+                          .where('isLive', isEqualTo: 'expired')
+                          .snapshots(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          return detailardsWidget(
+                            'Total Categories Expired',
+                            snapshot.data!.docs.length.toString(),
+                            'Categories',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const CategoriesList(type: 'expired'),
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        return detailardsWidget(
-                          'Total Categories Expired',
-                          '00',
-                          'Categories',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const CategoriesList(type: 'expired'),
+                          );
+                        } else {
+                          return detailardsWidget(
+                            'Total Categories Expired',
+                            '00',
+                            'Categories',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const CategoriesList(type: 'expired'),
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  'Countries Section :',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    color: blackColor.withOpacity(0.5),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    'Countries Section :',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      color: blackColor.withOpacity(0.5),
+                    ),
                   ),
                 ),
-              ),
-              Row(
-                children: [
-                  StreamBuilder(
-                    stream: countriesCollection
-                        .where('isLive', isEqualTo: 'live')
-                        .snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        return detailardsWidget(
-                          'Total Countries Live Now',
-                          snapshot.data!.docs.length.toString(),
-                          'Countries',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const CountriesList(type: 'live'),
+                Row(
+                  children: [
+                    StreamBuilder(
+                      stream: countriesCollection
+                          .where('isLive', isEqualTo: 'live')
+                          .snapshots(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          return detailardsWidget(
+                            'Total Countries Live Now',
+                            snapshot.data!.docs.length.toString(),
+                            'Countries',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const CountriesList(type: 'live'),
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        return detailardsWidget(
-                          'Total Countries Live Now',
-                          '00',
-                          'Countries',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const CountriesList(type: 'live'),
+                          );
+                        } else {
+                          return detailardsWidget(
+                            'Total Countries Live Now',
+                            '00',
+                            'Countries',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const CountriesList(type: 'live'),
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  const SizedBox(width: 10),
-                  StreamBuilder(
-                    stream: countriesCollection
-                        .where('isLive', isEqualTo: 'expired')
-                        .snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        return detailardsWidget(
-                          'Total Countries Expired or Paused',
-                          snapshot.data!.docs.length.toString(),
-                          'Countries',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const CountriesList(type: 'expired'),
+                          );
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                    StreamBuilder(
+                      stream: countriesCollection
+                          .where('isLive', isEqualTo: 'expired')
+                          .snapshots(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          return detailardsWidget(
+                            'Total Countries Expired or Paused',
+                            snapshot.data!.docs.length.toString(),
+                            'Countries',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const CountriesList(type: 'expired'),
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        return detailardsWidget(
-                          'Total Countries Expired or Paused',
-                          '00',
-                          'Countries',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const CountriesList(type: 'expired'),
+                          );
+                        } else {
+                          return detailardsWidget(
+                            'Total Countries Expired or Paused',
+                            '00',
+                            'Countries',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const CountriesList(type: 'expired'),
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  'Feedbacks Section :',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    color: blackColor.withOpacity(0.5),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    'Feedbacks Section :',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      color: blackColor.withOpacity(0.5),
+                    ),
                   ),
                 ),
-              ),
-              Row(
-                children: [
-                  StreamBuilder(
-                    stream: feedbacksCollection.snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        return detailardsWidget(
-                          'Total Feedbacks Received',
-                          snapshot.data!.docs.length.toString(),
-                          'Feedbacks',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const FeedbacksList(),
+                Row(
+                  children: [
+                    StreamBuilder(
+                      stream: feedbacksCollection.snapshots(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          return detailardsWidget(
+                            'Total Feedbacks Received',
+                            snapshot.data!.docs.length.toString(),
+                            'Feedbacks',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const FeedbacksList(),
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        return detailardsWidget(
-                          'Total Feedbacks Received',
-                          '00',
-                          'Feedbacks',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const FeedbacksList(),
+                          );
+                        } else {
+                          return detailardsWidget(
+                            'Total Feedbacks Received',
+                            '00',
+                            'Feedbacks',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const FeedbacksList(),
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-            ],
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),

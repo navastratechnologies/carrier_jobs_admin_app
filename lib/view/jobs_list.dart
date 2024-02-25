@@ -1,5 +1,6 @@
 import 'package:carrier_jobs_app/controller/instances.dart';
 import 'package:carrier_jobs_app/view/add_job.dart';
+import 'package:carrier_jobs_app/view/edit_job.dart';
 import 'package:carrier_jobs_app/view/helpers/colors.dart';
 import 'package:carrier_jobs_app/view/helpers/responsive_size.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -79,23 +80,44 @@ class _JobsListState extends State<JobsList> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: mainColor,
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              child: Text(
-                                documentSnapshot['isLive'] == 'yes'
-                                    ? 'Live Now'
-                                    : 'Paused/Expired',
-                                style: GoogleFonts.poppins(
-                                  color: whiteColor,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: mainColor,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
+                                  child: Text(
+                                    documentSnapshot['isLive'] == 'live'
+                                        ? 'Live Now'
+                                        : 'Paused/Expired',
+                                    style: GoogleFonts.poppins(
+                                      color: whiteColor,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                MaterialButton(
+                                  minWidth: 0,
+                                  color: mainColor,
+                                  onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => JobEditPage(
+                                        documentId: documentSnapshot.id,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    Icons.edit_rounded,
+                                    color: whiteColor,
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 10),
                             Row(
