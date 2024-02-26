@@ -21,6 +21,7 @@ class _JobEditPageState extends State<JobEditPage> {
 
   TextEditingController nameController = TextEditingController();
   TextEditingController detailsController = TextEditingController();
+  TextEditingController sharingController = TextEditingController();
   String quillData = '';
 
   String selectedValue = '';
@@ -37,6 +38,7 @@ class _JobEditPageState extends State<JobEditPage> {
           nameController.text = value.get('job_name');
           detailsController.text = value.get('details');
           quillData = value.get('additional_details');
+          sharingController.text = value.get('sharing_data');
         });
       },
     );
@@ -103,6 +105,11 @@ class _JobEditPageState extends State<JobEditPage> {
                   'Please enter job name',
                 ),
                 fields(
+                  sharingController,
+                  'Please enter sharing description',
+                  'Please enter sharing description',
+                ),
+                fields(
                   detailsController,
                   'How to apply',
                   'How to apply',
@@ -117,16 +124,12 @@ class _JobEditPageState extends State<JobEditPage> {
                           if (formKey.currentState?.validate() ?? false) {
                             jobsCollection.doc(widget.documentId).update(
                               {
-                                'age_limit': '',
-                                'job_department': '',
                                 'job_name': nameController.text,
-                                'no_of_posts': '',
-                                'qualification': '',
-                                'salary': '',
                                 'date':
                                     "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
                                 'details': detailsController.text,
                                 'isLive': 'live',
+                                'sharing_data': sharingController.text,
                               },
                             ).then(
                               (value) async {
@@ -207,9 +210,12 @@ class _JobEditPageState extends State<JobEditPage> {
         controller: controller,
         style: GoogleFonts.poppins(
           color: blackColor,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
         ),
-        maxLines: hint.toString().contains('additional') ? 5 : 1,
+        maxLines: hint.toString().contains('additional') ||
+                hint.toString().contains('sharing')
+            ? 5
+            : 1,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: GoogleFonts.poppins(

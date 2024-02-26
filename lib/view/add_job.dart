@@ -24,6 +24,7 @@ class _JobPageState extends State<JobPage> {
   TextEditingController salaryController = TextEditingController();
   TextEditingController qualificationController = TextEditingController();
   TextEditingController detailsController = TextEditingController();
+  TextEditingController sharingController = TextEditingController();
 
   late MultiSelectController multiSelectController;
 
@@ -184,6 +185,11 @@ class _JobPageState extends State<JobPage> {
                   ],
                 ),
                 fields(
+                  sharingController,
+                  'Please add sharing description',
+                  'Please add sharing description',
+                ),
+                fields(
                   detailsController,
                   'How to apply',
                   'How to apply',
@@ -216,6 +222,7 @@ class _JobPageState extends State<JobPage> {
                                   .replaceAll(']', '')
                                   .replaceAll(' , ', ','),
                               howToApply: detailsController.text,
+                              sharingDetails: sharingController.text,
                             ),
                           ),
                         );
@@ -245,9 +252,12 @@ class _JobPageState extends State<JobPage> {
         controller: controller,
         style: GoogleFonts.poppins(
           color: blackColor,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
         ),
-        maxLines: hint.toString().contains('How to apply') ? 5 : 1,
+        maxLines: hint.toString().contains('How to apply') ||
+                hint.toString().contains('sharing')
+            ? 5
+            : 1,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: GoogleFonts.poppins(
