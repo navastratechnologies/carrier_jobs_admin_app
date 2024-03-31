@@ -10,7 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:quill_html_converter/quill_html_converter.dart';
 
 class AddJobAdditionalDetail extends StatefulWidget {
-  final String title, location, category, howToApply, sharingDetails;
+  final String title, location, category, howToApply;
   final String? quillData;
   const AddJobAdditionalDetail({
     super.key,
@@ -19,7 +19,6 @@ class AddJobAdditionalDetail extends StatefulWidget {
     required this.category,
     this.quillData,
     required this.howToApply,
-    required this.sharingDetails,
   });
 
   @override
@@ -80,7 +79,8 @@ class _AddJobAdditionalDetailState extends State<AddJobAdditionalDetail> {
                           .toDelta()
                           .toHtml()
                           .toString(),
-                      'sharing_data': widget.sharingDetails,
+                      'sharing_data':
+                          quillController.document.toPlainText().toString(),
                     },
                   ).then(
                     (value) async {

@@ -24,7 +24,6 @@ class _JobPageState extends State<JobPage> {
   TextEditingController salaryController = TextEditingController();
   TextEditingController qualificationController = TextEditingController();
   TextEditingController detailsController = TextEditingController();
-  TextEditingController sharingController = TextEditingController();
 
   late MultiSelectController multiSelectController;
 
@@ -185,11 +184,6 @@ class _JobPageState extends State<JobPage> {
                   ],
                 ),
                 fields(
-                  sharingController,
-                  'Please add sharing description',
-                  'Please add sharing description',
-                ),
-                fields(
                   detailsController,
                   'How to apply',
                   'How to apply',
@@ -222,7 +216,6 @@ class _JobPageState extends State<JobPage> {
                                   .replaceAll(']', '')
                                   .replaceAll(' , ', ','),
                               howToApply: detailsController.text,
-                              sharingDetails: sharingController.text,
                             ),
                           ),
                         );
