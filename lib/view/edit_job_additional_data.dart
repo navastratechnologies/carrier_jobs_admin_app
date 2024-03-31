@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:carrier_jobs_app/controller/instances.dart';
 import 'package:carrier_jobs_app/view/helpers/colors.dart';
 import 'package:flutter/material.dart';
@@ -65,12 +67,15 @@ class _EditJobAdditionalDetailState extends State<EditJobAdditionalDetail> {
               child: MaterialButton(
                 color: mainColor,
                 onPressed: () async {
+                  log('raw data is ${quillController.document.toPlainText()}');
                   jobsCollection.doc(widget.documentId).update(
                     {
                       'additional_details': quillController.document
                           .toDelta()
                           .toHtml()
                           .toString(),
+                      'sharing_data':
+                          quillController.document.toPlainText().toString(),
                     },
                   );
                   ScaffoldMessenger.of(context).showSnackBar(

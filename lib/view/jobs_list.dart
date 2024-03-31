@@ -19,6 +19,22 @@ class JobsList extends StatefulWidget {
 }
 
 class _JobsListState extends State<JobsList> {
+  DateTime _parseDate(String dateString) {
+    List<String> dateAndTimeParts = dateString.split(' ');
+    List<String> dateParts = dateAndTimeParts[0].split('/');
+    List<String> timeParts = dateAndTimeParts[1].split(':');
+
+    int day = int.parse(dateParts[0]);
+    int month = int.parse(dateParts[1]);
+    int year = int.parse(dateParts[2]);
+
+    int hour = int.parse(timeParts[0]);
+    int minute = int.parse(timeParts[1]);
+    int second = int.parse(timeParts[2]);
+
+    return DateTime(year, month, day, hour, minute, second);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,8 +87,16 @@ class _JobsListState extends State<JobsList> {
                 : ListView.builder(
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
-                      DocumentSnapshot documentSnapshot =
-                          snapshot.data!.docs[index];
+                      List<DocumentSnapshot> documents = snapshot.data!.docs;
+
+                      documents.sort((a, b) {
+                        DateTime dateA = _parseDate(a['date']);
+                        DateTime dateB = _parseDate(b['date']);
+                        return dateB.compareTo(dateA);
+                      });
+
+                      DocumentSnapshot documentSnapshot = documents[index];
+
                       return MaterialButton(
                         color: whiteColor,
                         padding: const EdgeInsets.all(20),
@@ -206,6 +230,15 @@ class _JobsListState extends State<JobsList> {
                                   ],
                                 ),
                               ],
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Posted at: ${documentSnapshot['date']}',
+                              style: GoogleFonts.poppins(
+                                color: blackColor.withOpacity(0.5),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
+                              ),
                             ),
                           ],
                         ),

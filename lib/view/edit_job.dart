@@ -21,7 +21,6 @@ class _JobEditPageState extends State<JobEditPage> {
 
   TextEditingController nameController = TextEditingController();
   TextEditingController detailsController = TextEditingController();
-  TextEditingController sharingController = TextEditingController();
   String quillData = '';
 
   String selectedValue = '';
@@ -38,7 +37,6 @@ class _JobEditPageState extends State<JobEditPage> {
           nameController.text = value.get('job_name');
           detailsController.text = value.get('details');
           quillData = value.get('additional_details');
-          sharingController.text = value.get('sharing_data');
         });
       },
     );
@@ -105,11 +103,6 @@ class _JobEditPageState extends State<JobEditPage> {
                   'Please enter job name',
                 ),
                 fields(
-                  sharingController,
-                  'Please enter sharing description',
-                  'Please enter sharing description',
-                ),
-                fields(
                   detailsController,
                   'How to apply',
                   'How to apply',
@@ -126,10 +119,9 @@ class _JobEditPageState extends State<JobEditPage> {
                               {
                                 'job_name': nameController.text,
                                 'date':
-                                    "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
+                                    "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}",
                                 'details': detailsController.text,
                                 'isLive': 'live',
-                                'sharing_data': sharingController.text,
                               },
                             ).then(
                               (value) async {

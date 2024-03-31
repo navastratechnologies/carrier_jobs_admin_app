@@ -73,7 +73,7 @@ class _AddJobAdditionalDetailState extends State<AddJobAdditionalDetail> {
                       'qualification': '',
                       'salary': '',
                       'date':
-                          "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
+                          "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}",
                       'details': widget.howToApply,
                       'isLive': 'live',
                       'additional_details': quillController.document
