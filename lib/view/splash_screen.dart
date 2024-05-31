@@ -1,4 +1,5 @@
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
+import 'package:carrier_jobs_app/controller/delete_jobs_controller.dart';
 import 'package:flutter/material.dart';
 
 import '../controller/login_managing_controller.dart';
@@ -19,6 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     checkLogin();
+    deleteOldDocuments();
     super.initState();
   }
 

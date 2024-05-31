@@ -41,13 +41,14 @@ dependencies:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
   flutter_local_notifications: ^16.3.0
-  flutter_quill:
+  flutter_quill: null
   flutter_secure_storage: ^9.0.0
   google_fonts: ^6.1.0
   image_picker: ^1.0.7
   multi_dropdown: ^2.1.4
+  provider: ^6.1.2
+  quill_html_converter: null
   vsc_quill_delta_to_html: ^1.0.4
-  quill_html_converter: 
 
 dev_dependencies:
   flutter_lints: ^3.0.1
